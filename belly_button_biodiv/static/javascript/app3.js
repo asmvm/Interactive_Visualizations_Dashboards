@@ -1,33 +1,26 @@
 d3.json("./samples.json").then((importedData) => {      
     console.log(importedData);
     var data = importedData.samples;
-    // Object.keys(data).forEach(key => console.log(key));
-    Object.values(data).forEach(value => console.log(value));
+
     // Object.entries(data).forEach(([key, value]) => console.log(`Key: ${key} and Value ${value}`));
     
     // console print the data we are interested in extracting
-    var otu_ids = data.map(function(d) {
-        return d.otu_ids
-    });
+    var otu_ids = data[0].otu_ids;
     console.log(otu_ids);
-    
-    var sample_values = data.map(function(d) {
-        return d.sample_values
-    });
+   
+    var sample_values = data[0].sample_values;
     console.log(sample_values);
 
-    var otu_labels = data.map(function(d) {
-        return d.otu_labels
-    });
+    var otu_labels = data[0].otu_labels;
     console.log(otu_labels);
 
     // Grab the values from the data samples object to build the plot
-    var sliced_values = sample_values[6].slice(0,10).reverse();
-    console.log(sliced_values);
-    var sliced_labels = otu_labels[6].slice(0,10);
-    console.log(sliced_labels);
-    var sliced_ids = otu_ids[6].slice(0,10);
+    var sliced_ids = otu_ids.slice(0,10);
     console.log(sliced_ids);
+    var sliced_values = sample_values.slice(0,10).reverse();
+    console.log(sliced_values);
+    var sliced_labels = otu_labels.slice(0,10);
+    console.log(sliced_labels);
     
     var top_ten_id = sliced_ids.map(d => "OTU " + d);
 
@@ -59,17 +52,17 @@ d3.json("./samples.json").then((importedData) => {
       }
     };
   
-    // Create the data array for the BAR PLOT
+    // // Create the data array for the BAR PLOT
     var data1 = [trace1];
     // Create the data array for the BUBBLE CHART
     var data2 = [trace2];
   
 
-    // Define the BAR PLOT layout
+    // // Define the BAR PLOT layout
     var layout1 = {
-      title: "Sample 6",
+      title: "Sample",
       xaxis: { title: "Value" },
-      // yaxis: { title: "OTU ID" }
+    //   yaxis: { tickmode:"linear" }
     };
     // Define the BUBBLE CHART layout
     var layout2 = {
@@ -81,7 +74,7 @@ d3.json("./samples.json").then((importedData) => {
       // width: 1500
     };
 
-    // Plot BAR PLOT to a div tag with id "bar"
+    // // Plot BAR PLOT to a div tag with id "bar"
     Plotly.newPlot("bar", data1, layout1);
     // Plot BUBBLE CHART to a div tag with id "bubble"
     Plotly.newPlot("bubble", data2, layout2);
