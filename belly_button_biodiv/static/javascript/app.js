@@ -32,7 +32,7 @@ d3.json("./samples.json").then((importedData) => {
     
     var top_ten_id = sliced_ids.map(d => "OTU " + d);
 
-    //  Create the Traces
+    //  Create the trace for bar plot
     var trace1 = {
       x: sliced_values,
       y: top_ten_id,
@@ -42,24 +42,49 @@ d3.json("./samples.json").then((importedData) => {
       marker: {
         width: 3,
         color: 'rgba(50,171,96,0.6)',
-        line: {
-          color: 'rgba(50,171,96,1.0)',
-          width: 2
-        }
+        line: {color: 'rgba(50,171,96,1.0)',width: 2}
       },
       name: 'OTU Top 10',  
     };
+    
+    //  Create the trace for bubble chart
+    var trace2 = {
+      x: otu_ids[6],
+      y: sample_values[6],
+      text: otu_labels[6], 
+      mode: 'markers',
+      marker: {
+        color: otu_ids[6],
+        size: sample_values[6],
+        colorscale: 'Jet',
+      }
+    };
   
-    // Create the data array for the plot
-    var data = [trace1];
+    // Create the data array for the BAR PLOT
+    var data1 = [trace1];
+    // Create the data array for the BUBBLE CHART
+    var data2 = [trace2];
   
-    // Define the plot layout
-    var layout = {
+
+    // Define the BAR PLOT layout
+    var layout1 = {
       title: "Sample 6",
       xaxis: { title: "Value" },
       // yaxis: { title: "OTU ID" }
     };
-  
-    // Plot the chart to a div tag with id "bar"
-    Plotly.newPlot("bar", data, layout);
+    // Define the BUBBLE CHART layout
+    var layout2 = {
+      title: 'Bellybutton Biodiversity',
+      xaxis: { title: "OTU ID"},
+      showlegend: false,
+      height: 700,
+      width: 1500
+    };
+
+    // Plot BAR PLOT to a div tag with id "bar"
+    Plotly.newPlot("bar", data1, layout1);
+    // Plot BUBBLE CHART to a div tag with id "bubble"
+    Plotly.newPlot("bubble", data2, layout2);
+
+
   });
