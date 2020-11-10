@@ -1,6 +1,6 @@
-buildPlots();
-
-function buildPlots() {
+// Initialize page with default plots
+// Use D3 to fetch and read the JSON file
+function buildPlots(id) {
     d3.json("./samples.json").then((importedData) => {      
         console.log(importedData);
         var data = importedData.samples;
@@ -18,6 +18,7 @@ function buildPlots() {
         console.log(otu_labels);
 
         // Grab the values from the data samples object to build the plot
+        // Slice the first 10 objects for plotting
         var sliced_ids = otu_ids.slice(0,10);
         console.log(sliced_ids);
         var sliced_values = sample_values.slice(0,10).reverse();
@@ -77,13 +78,65 @@ function buildPlots() {
         // width: 1500
         };
 
-        // // Plot BAR PLOT to a div tag with id "bar"
+        // Render the plot to the div tag with id "bar"
         Plotly.newPlot("bar", data1, layout1);
-        // Plot BUBBLE CHART to a div tag with id "bubble"
+        // Render the plot to the div tag with id "bubble"
         Plotly.newPlot("bubble", data2, layout2);
+
+        // var metadata = importedData.metadata;
+        // console.log(metadata);
+
+    });
+};
+buildPlots();
+
+function demographicPanel(id) {
+    d3.json("./samples.json").then((importedData) => {      
+        var metadata = importedData.metadata;
+        console.log(metadata);
+
+        var panel = d3.select("#sample-metadata");
+        panel.html("");
+        Object.entries(metadata).forEach(([key, value]) => {
+            // Log the key and value
+            panel.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");
+        });
 
     });
 
 };
 
+function optionChanged(id) {
+    buildPlots(id);
+    demographicPanel(id);
+}
 
+
+function init() {
+    // Grab a Reference to the Dropdown Select Element
+    var dropdown = d3.select("#selDataset");
+  
+    // Use the List of Sample Names to Populate the Select Options
+    d3.json("./samples.json").then((dataNames) => {
+      dataNames.forEach((sample) => {
+        selector
+          .append("option")
+          .text(sample)
+          .property("value", sample);
+      });
+  
+      // Use the First Sample from the List to Build Initial Plots
+      var firstName = dataNames[0];
+      buildPlots(firstName);
+      demographicPanel(firstName);
+    });
+  }
+  
+  function optionChanged(newSample) {
+    // Fetch New Data Each Time a New Sample is Selected
+    buildPlots(id);
+    demographicPanel(id);
+  }
+  
+  // Initialize the Dashboard
+  init();

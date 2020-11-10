@@ -1,5 +1,5 @@
 d3.json("./samples.json").then((importedData) => {      
-    console.log(importedData);
+    // console.log(data);
     var data = importedData.samples;
     // Object.keys(data).forEach(key => console.log(key));
     Object.values(data).forEach(value => console.log(value));
