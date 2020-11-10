@@ -88,18 +88,21 @@ function buildPlots(id) {
 
     });
 };
-buildPlots();
+
 
 function demographicPanel(id) {
     d3.json("./samples.json").then((importedData) => {      
         var metadata = importedData.metadata;
         console.log(metadata);
 
-        var panel = d3.select("#sample-metadata");
-        panel.html("");
-        Object.entries(metadata).forEach(([key, value]) => {
+        var filteredData = metadata.filter(m => m.id.toString() === id)[0];
+
+        var demoPanel = d3.select("#sample-metadata");
+        demoPanel.html("");
+        
+        Object.entries(filteredData).forEach((key) => {
             // Log the key and value
-            panel.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");
+            demoPanel.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");
         });
 
     });
@@ -109,7 +112,7 @@ function demographicPanel(id) {
 function optionChanged(id) {
     buildPlots(id);
     demographicPanel(id);
-}
+};
 
 
 function init() {
@@ -117,26 +120,20 @@ function init() {
     var dropdown = d3.select("#selDataset");
   
     // Use the List of Sample Names to Populate the Select Options
-    d3.json("./samples.json").then((dataNames) => {
-      dataNames.forEach((sample) => {
-        selector
+    d3.json("./samples.json").then((importedData) => {
+      importedData.names.forEach((sampleName) => {
+        dropdown
           .append("option")
-          .text(sample)
-          .property("value", sample);
+          .text(sampleName)
+          .property("value");
       });
   
       // Use the First Sample from the List to Build Initial Plots
-      var firstName = dataNames[0];
+      var firstName = importedData.names[0];
       buildPlots(firstName);
       demographicPanel(firstName);
     });
-  }
-  
-  function optionChanged(newSample) {
-    // Fetch New Data Each Time a New Sample is Selected
-    buildPlots(id);
-    demographicPanel(id);
-  }
+  };
   
   // Initialize the Dashboard
   init();
