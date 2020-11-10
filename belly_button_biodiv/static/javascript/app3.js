@@ -5,8 +5,6 @@ function buildPlots(id) {
         console.log(importedData);
         var data = importedData.samples;
 
-        // Object.entries(data).forEach(([key, value]) => console.log(`Key: ${key} and Value ${value}`));
-        
         // console print the data we are interested in extracting
         var otu_ids = data[0].otu_ids;
         console.log(otu_ids);
@@ -112,16 +110,15 @@ function demographicPanel(id) {
 function optionChanged(id) {
     buildPlots(id);
     demographicPanel(id);
-};
+}
 
 
 function init() {
-    // Grab a Reference to the Dropdown Select Element
+    // Assign the value of the dropdown menu option to a variable
     var dropdown = d3.select("#selDataset");
-  
-    // Use the List of Sample Names to Populate the Select Options
+     // Populate all the sample names as options in the dropdown menu
     d3.json("./samples.json").then((importedData) => {
-      importedData.names.forEach((sampleName) => {
+      importedData.names.forEach(function(sampleName) {
         dropdown
           .append("option")
           .text(sampleName)
@@ -129,9 +126,9 @@ function init() {
       });
   
       // Use the First Sample from the List to Build Initial Plots
-      var firstName = importedData.names[0];
-      buildPlots(firstName);
-      demographicPanel(firstName);
+      
+      buildPlots(importedData.names[0]);
+      demographicPanel(importedData.names[0]);
     });
   };
   
