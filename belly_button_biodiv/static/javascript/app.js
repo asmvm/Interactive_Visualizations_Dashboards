@@ -2,7 +2,7 @@
 // Use D3 to fetch and read the JSON file
 function demographicPanel(id) {
     
-    d3.json("./samples.json").then((importedData) => {      
+    d3.json("samples.json").then((importedData) => {      
         console.log(importedData);
         var metadata = importedData.metadata;
         // console.log(metadata);
@@ -18,14 +18,12 @@ function demographicPanel(id) {
         Object.entries(object).forEach(([key, value]) => {
             demoPanel.append("h5").text(`${key.toUpperCase()}: ${value}`);
         });
-        // create guage for the Bonus activity
-        // buildGauge(filteredData.wfreq);
-
+        
     });
 }    
     
 function buildPlots(id) {
-    d3.json("./samples.json").then((importedData) => {      
+    d3.json("samples.json").then((importedData) => {      
         // console.log(importedData);
         var data = importedData.samples;
         var filtData = data.filter(m => m.id == id);
@@ -130,7 +128,7 @@ function init() {
     });  
     
 }
-
+// Fetch new data each time a new ID is selected
 function optionChanged (newID) {
       buildPlots(newID);
       demographicPanel(newID);
