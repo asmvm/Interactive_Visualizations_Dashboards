@@ -1,18 +1,44 @@
 // Initialize page with default plots
 // Use D3 to fetch and read the JSON file
-function buildPlots(id) {
+function demographicPanel(id) {
+    
     d3.json("./samples.json").then((importedData) => {      
         console.log(importedData);
+        var metadata = importedData.metadata;
+        // console.log(metadata);
+        // Filter the data for the object with the desired sample number
+        var filteredData = metadata.filter(m => m.id == id);
+        var object = filteredData[0];
+        console.log(object);
+        // Use d3 to select the panel with id of `#sample-metadata`
+        var demoPanel = d3.select("#sample-metadata");
+        // Use `.html("") to clear any existing metadata
+        demoPanel.html("");
+
+        Object.entries(object).forEach(([key, value]) => {
+            demoPanel.append("h5").text(`${key.toUpperCase()}: ${value}`);
+        });
+        // create guage for the Bonus activity
+        // buildGauge(filteredData.wfreq);
+
+    });
+}    
+    
+function buildPlots(id) {
+    d3.json("./samples.json").then((importedData) => {      
+        // console.log(importedData);
         var data = importedData.samples;
+        var filtData = data.filter(m => m.id == id);
+        console.log(filtData);
+        var samples_object = filtData[0];
+        console.log(samples_object);
 
         // console print the data we are interested in extracting
-        var otu_ids = data[0].otu_ids;
+        var otu_ids = samples_object.otu_ids;
         console.log(otu_ids);
-    
-        var sample_values = data[0].sample_values;
+        var sample_values = samples_object.sample_values;
         console.log(sample_values);
-
-        var otu_labels = data[0].otu_labels;
+        var otu_labels = samples_object.otu_labels;
         console.log(otu_labels);
 
         // Grab the values from the data samples object to build the plot
@@ -81,56 +107,35 @@ function buildPlots(id) {
         // Render the plot to the div tag with id "bubble"
         Plotly.newPlot("bubble", data2, layout2);
 
-        // var metadata = importedData.metadata;
-        // console.log(metadata);
-
     });
-};
-
-
-function demographicPanel(id) {
-    d3.json("./samples.json").then((importedData) => {      
-        var metadata = importedData.metadata;
-        console.log(metadata);
-
-        var filteredData = metadata.filter(m => m.id.toString() === id)[0];
-
-        var demoPanel = d3.select("#sample-metadata");
-        demoPanel.html("");
-        
-        Object.entries(filteredData).forEach((key) => {
-            // Log the key and value
-            demoPanel.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");
-        });
-
-    });
-
-};
-
-function optionChanged(id) {
-    buildPlots(id);
-    demographicPanel(id);
 }
-
 
 function init() {
     // Assign the value of the dropdown menu option to a variable
     var dropdown = d3.select("#selDataset");
-     // Populate all the sample names as options in the dropdown menu
+    // Populate all the sample names as options in the dropdown menu
     d3.json("./samples.json").then((importedData) => {
-      importedData.names.forEach(function(sampleName) {
-        dropdown
-          .append("option")
-          .text(sampleName)
-          .property("value");
-      });
-  
-      // Use the First Sample from the List to Build Initial Plots
-      
-      buildPlots(importedData.names[0]);
-      demographicPanel(importedData.names[0]);
-    });
-  };
-  
-  // Initialize the Dashboard
-  init();
+        var sampleNames = importedData.names;
+        sampleNames.forEach((sample) => {
+            dropdown
+            .append("option")
+            .text(sample)
+            .property("value", sample);
+        });
+
+        // Use the first sample name from the List to build initial plots
+        initialName = sampleNames[0]
+        buildPlots(initialName);
+        demographicPanel(initialName);
+    });  
+    
+}
+
+function optionChanged (newID) {
+      buildPlots(newID);
+      demographicPanel(newID);
+}
+
+// Initialize the Dashboard
+init();
+       
